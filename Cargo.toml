@@ -1,9 +1,16 @@
-[package]
-name = "synced-objects"
+[workspace]
+resolver = "2"
+members = ["synced_client", "synced_server"]
+
+[workspace.package]
 version = "0.1.0"
 edition = "2021"
+description = "Synced objects through sockets"
+authors = ["Liam Israel"]
+readme = "README.md"
+keywords = ["synced", "objects", "sockets"]
 
-[dependencies]
+[workspace.dependencies]
 bincode = "1.3.3"
 lazy_static = "1.4.0"
 serde = "1.0.203"

@@ -1,0 +1,13 @@
+[package]
+name = "synced_client"
+description = "Client"
+authors = { workspace = true }
+edition = { workspace = true }
+keywords = { workspace = true }
+readme = { workspace = true }
+version = { workspace = true }
+
+[dependencies]
+bincode = "1.3.3"
+lazy_static = "1.4.0"
+serde = "1.0.203"

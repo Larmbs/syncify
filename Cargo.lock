@@ -67,7 +67,16 @@ dependencies = [
 ]
 
 [[package]]
-name = "synced-objects"
+name = "synced_client"
+version = "0.1.0"
+dependencies = [
+ "bincode",
+ "lazy_static",
+ "serde",
+]
+
+[[package]]
+name = "synced_server"
 version = "0.1.0"
 dependencies = [
  "bincode",
