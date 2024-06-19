@@ -1,3 +1,4 @@
+#![allow(unused)]
 use lazy_static::lazy_static;
 use std::net::{
     TcpStream,
@@ -17,23 +18,17 @@ use bincode::{
     deserialize, serialize, ErrorKind
 };
 
-// Creating a shared stream object to talk with server
 lazy_static! {
+    /// Creating a shared stream object to talk with server
     static ref CONN: Mutex<Option<TcpStream>> = Mutex::new(None);
 }
 
-/// Error type that represents errors which might occur
-pub enum SyncError {
-    SerializeError(Box<ErrorKind>),
-    MutexError()
-}
-
 /// Connects to external server for syncing
-pub fn connect(addr: SocketAddr) -> io::Result<()> {
-    let mut conn = CONN.lock().unwrap();
+pub fn connect(addr: SocketAddr) -> Result<(), Box<dyn std::error::Error>> {
+    let mut guard = CONN.lock()?;
 
     let stream = TcpStream::connect(addr)?;
-    *conn = Some(stream);
+    *guard = Some(stream);
 
     Ok(())
 }
@@ -55,7 +50,6 @@ pub trait Sync<'a>: Serialize + Deserialize<'a> {
             },
             None => panic_no_connection(),
         }
-
     }
     fn init() {
         todo!()

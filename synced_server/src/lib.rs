@@ -1,3 +1,4 @@
+#![allow(unused)]
 use std::net::{
     SocketAddr,
     TcpListener
@@ -16,19 +17,18 @@ lazy_static! {
 }
 
 /// Binds the server to the addr you specify
-pub fn bind_server(addr: SocketAddr) -> io::Result<()> { 
+pub fn bind_server(addr: SocketAddr) -> Result<(), Box<dyn std::error::Error>> { 
     let listener = TcpListener::bind(addr)?;
 
-    // Updating listener
-    let mut guard = LISTENER.lock().unwrap();
+    let mut guard = LISTENER.lock()?;
     *guard = Some(listener);
 
     Ok(())
 }
 
 /// Begin listening for incoming requests and handling them
-pub fn listen() {
-    let mut guard = LISTENER.lock().unwrap();
+pub fn listen() -> Result<(), Box<dyn std::error::Error>> {
+    let mut guard = LISTENER.lock()?;
 
     match &mut *guard {
         Some(listener) => {
@@ -39,4 +39,6 @@ pub fn listen() {
         },
         None => panic!("You have not binded the server, please refer to the bind_server() method"),
     }
+
+    Ok(())
 }
