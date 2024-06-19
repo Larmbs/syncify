@@ -1,6 +1,6 @@
 [workspace]
 resolver = "2"
-members = ["synced_client", "synced_server"]
+members = ["syncify_client", "syncify_server"]
 
 [workspace.package]
 version = "0.1.0"

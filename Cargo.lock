@@ -67,7 +67,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "synced_client"
+name = "syncify-client"
 version = "0.1.0"
 dependencies = [
  "bincode",
@@ -76,7 +76,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "synced_server"
+name = "syncify-server"
 version = "0.1.0"
 dependencies = [
  "bincode",
