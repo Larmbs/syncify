@@ -1,13 +1,13 @@
 [package]
-name = "syncify_server"
-description = "Allows the creation and management of syncing server"
+name = "syncify_core"
+description = "Core functionality of syncify"
 authors = { workspace = true }
 edition = { workspace = true }
 keywords = { workspace = true }
 readme = { workspace = true }
 version = "0.1.0"
-
+ 
 [dependencies]
 bincode = "1.3.3"
-lazy_static = "1.4.0"
-serde = "1.0.203"
+flate2 = "1.0.30"
+serde = {version = "1.0.203", features = [ "derive" ] }
