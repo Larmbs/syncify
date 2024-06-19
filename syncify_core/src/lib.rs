@@ -92,6 +92,9 @@ mod tests {
         p1: String,
         p2: u16,
         p3: Option<i128>,
+        p4: String,
+        p5: Option<()>,
+        p6: Vec<u8>,
     }
 
     #[test]
@@ -100,17 +103,25 @@ mod tests {
             p1: String::from("Hello World"),
             p2: 345,
             p3: None,
+            p4: String::from("Another string is here and is large and needs to be compressed by a lot as there is no point in keeping it so large"),
+            p5: None,
+            p6: vec![1, 3, 4, 6, 7]
+
         };
         let new_obj = Object {
-            p1: String::from("Hlo World"),
-            p2: 345,
+            p1: String::from("Hlo World    What is this new message over here"),
+            p2: 34645,
             p3: None,
+            p4: String::from("Another string is here and is large and needs to be compressed by a lot as there is no point in keeping it so large"),
+            p5: Some(()),
+            p6: vec![1, 2, 3, 4, 5, 6, 7]
         };
 
         let diff = calc_diff(&prev_obj, &new_obj).unwrap();
+        println!("Before: len({})", diff.len());
 
         let compressed = compress_bytes(&diff);
-
+        println!("After: len({})", compressed.len());
         let decompressed = decompress_bytes(&compressed);
 
         let new_bytes = calc_new_val(&prev_obj, &decompressed).unwrap();
