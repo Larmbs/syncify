@@ -33,27 +33,8 @@ pub fn connect(addr: SocketAddr) -> Result<(), Box<dyn std::error::Error>> {
     Ok(())
 }
 
-/// Trait that allows struct to sync with other structs through server
-pub trait Sync<'a>: Serialize + Deserialize<'a> {
-    fn listen() {
-        todo!()
-    }
-    /// Function that sends an entire functions state
-    fn send(&mut self) {
-        let bytes = serialize(self).unwrap();
-        
-        let mut guard = CONN.lock().unwrap();
-
-        match &mut *guard {
-            Some(stream) => {
-                stream.write_all(&bytes).unwrap();
-            },
-            None => panic_no_connection(),
-        }
-    }
-    fn init() {
-        todo!()
-    }
+/// Trait on client side that represents an object which can be synced
+pub trait Syncable<'a>: Serialize + Deserialize<'a> {
 }
 
 #[inline]
