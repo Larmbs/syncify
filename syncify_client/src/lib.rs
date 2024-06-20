@@ -1,22 +1,13 @@
-#![allow(unused)]
 use lazy_static::lazy_static;
 use std::net::{
     TcpStream,
     SocketAddr,
 };
-use std::sync::{
-    Mutex, 
-};
-use std::io::{
-    self, 
-    Write,
-    Read,
-};
+use std::sync::Mutex;
 
-use serde::{Deserialize, Serialize};
-use bincode::{
-    deserialize, serialize, ErrorKind
-};
+use syncify_core::Syncable;
+
+
 
 lazy_static! {
     /// Creating a shared stream object to talk with server
@@ -33,12 +24,13 @@ pub fn connect(addr: SocketAddr) -> Result<(), Box<dyn std::error::Error>> {
     Ok(())
 }
 
-/// Trait on client side that represents an object which can be synced
-pub trait Syncable<'a>: Serialize + Deserialize<'a> {
+
+pub fn get_instance<T>() -> Result<T, Box<dyn std::error::Error>> where T: Syncable {
+    todo!()
 }
 
 #[inline]
 /// Functions that panics to warn of not properly initializing a connection with server prior to syncing
-fn panic_no_connection() {
+fn panic_no_connection() -> ! {
     panic!("You attempted to sync your objects without connecting to a server!");
 }

@@ -1,22 +1,17 @@
-#![allow(unused)]
+use std::io::Read;
 use std::net::{
     SocketAddr,
     TcpListener
 };
 
-use std::io;
-
 use std::sync::Mutex;
 
 mod save_load;
+pub use save_load::*;
 
-use syncify_core::{struct_from_bytes, struct_to_bytes};
+use syncify_core::{struct_from_bytes, struct_to_bytes, Syncable};
 
 use lazy_static::lazy_static;
-use serde::{
-    Serialize,
-    Deserialize,
-};
 
 // Creating a shared server listening object
 lazy_static! {
@@ -35,8 +30,8 @@ pub fn bind_server(addr: SocketAddr) -> Result<(), Box<dyn std::error::Error>> {
     Ok(())
 }
 
-/// Sets the object to be synced on the server
-pub fn set_sync_object<T>(object: T) -> Result<(), Box<dyn std::error::Error>> where T: Serialize {
+/// Sets the object to be synced by the server
+pub fn set_sync_object<T>(object: T) -> Result<(), Box<dyn std::error::Error>> where T: Syncable {
     let bytes = struct_to_bytes(&object).unwrap();
 
     let mut guard = SYNC_OBJECT.lock()?;
@@ -45,21 +40,34 @@ pub fn set_sync_object<T>(object: T) -> Result<(), Box<dyn std::error::Error>> w
     Ok(())
 }
 
-/// Sets the object to be synced on the server
-pub fn get_sync_object<T>() -> Result<T, Box<dyn std::error::Error>> where T: Serialize + for<'a> Deserialize<'a> {
-    let mut guard = SYNC_OBJECT.lock()?;
-    Ok(struct_from_bytes(&guard.as_ref().unwrap()).unwrap())
+/// Gets the object currently being synced by the server
+pub fn get_sync_object<T>() -> Result<T, Box<dyn std::error::Error>> where T: Syncable {
+    let guard = SYNC_OBJECT.lock()?;
+
+    match &guard.as_ref() {
+        Some(obj_bytes) => {
+            let obj = struct_from_bytes(obj_bytes)?;
+            Ok(obj)
+        },
+        None => panic_no_sync_object_defined(),
+    }
 }
 
 /// Begin listening for incoming requests and handling them
-pub fn listen() -> Result<(), Box<dyn std::error::Error>> {
+pub async fn start_server() -> Result<(), Box<dyn std::error::Error>> {
     let mut guard = LISTENER.lock()?;
+
+    let mut obj_bytes_guard = SYNC_OBJECT.lock()?;
+    let obj_bytes = obj_bytes_guard.as_mut().unwrap();
 
     match &mut *guard {
         Some(listener) => {
             for stream in listener.incoming() {
-                let stream = stream.unwrap();
-                
+                let mut stream = stream.unwrap();
+                let mut buf = Vec::new();
+                stream.read(&mut buf).unwrap();
+
+                *obj_bytes = buf;
             }
         },
         None => panic_bind_server(),
@@ -68,12 +76,19 @@ pub fn listen() -> Result<(), Box<dyn std::error::Error>> {
     Ok(())
 }
 
+/// Stops the server from running
+pub fn stop_server() {
+    todo!()
+}
+
+#[inline]
 /// Called when server has no socket addr to bind to
-fn panic_bind_server() {
+fn panic_bind_server() -> ! {
     panic!("You must bind the server to a SocketAddr, try bind_server()")
 }
 
+#[inline]
 /// Called when user has not specified what object to sync over network
-fn panic_no_sync_object_defined() {
+fn panic_no_sync_object_defined() -> ! {
     panic!("You must define an object to be synced, try set_sync_object()")
 }

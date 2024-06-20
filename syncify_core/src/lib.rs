@@ -2,6 +2,7 @@
 mod decode;
 mod encode;
 mod convert;
+mod traits;
 
 mod diff; 
 
@@ -10,6 +11,7 @@ pub use encode::encode;
 
 pub use convert::{struct_from_bytes, struct_to_bytes};
 pub use diff::{calc_diff, calc_next_with_prev};
+pub use traits::Syncable;
 
 #[cfg(test)]
 mod tests {

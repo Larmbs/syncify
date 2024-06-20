@@ -136,6 +136,7 @@ dependencies = [
  "bincode",
  "lazy_static",
  "serde",
+ "syncify_core",
 ]
 
 [[package]]

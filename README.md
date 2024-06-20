@@ -24,11 +24,13 @@ fn main() {
     let mut synced_obj: Doc = get_instance().unwrap();
     // Will send request to server and change name on client side
     synced_obj.change_name(String::from("Different name"));
+    // Connection automatically released with no use
 }
 ```
 
 ```Rust server.rs
 use syncify_server::*;
+use std::{thread, time};
 
 struct Doc {
     length: usize,
@@ -39,11 +41,13 @@ struct Doc {
 
 fn main() {
     bind_server("127.0.0.1:7777".parse().unwrap());
+
     let object = load("saves/data.txt");
     set_sync_object(object);
+
     start_server();
 
-    sleep(10s)
+    thread::sleep(time::Duration::from_secs(60));
 
     stop_server();
 
