@@ -1,3 +1,4 @@
+#![allow(unused)]
 //! Module that defines way of finding delta between objects
 
 /// XORs two byte array together

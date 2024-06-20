@@ -37,8 +37,12 @@ pub fn listen() -> Result<(), Box<dyn std::error::Error>> {
                 
             }
         },
-        None => panic!("You have not binded the server, please refer to the bind_server() method"),
+        None => panic_bind_server(),
     }
 
     Ok(())
+}
+
+fn panic_bind_server() {
+    panic!("You must bind the server to a SocketAddr, try bind_server()")
 }
