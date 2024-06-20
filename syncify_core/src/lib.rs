@@ -8,6 +8,9 @@ mod diff;
 pub use decode::decode;
 pub use encode::encode;
 
+pub use convert::{struct_from_bytes, struct_to_bytes};
+pub use diff::{calc_diff, calc_next_with_prev};
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -61,7 +64,7 @@ mod tests {
         let decompressed = decode(&compressed);
         let rx_new_bytes = diff::calc_next_with_prev(&prev_obj_bytes, &decompressed);
         let rx_new_obj: Object = convert::struct_from_bytes(&rx_new_bytes).unwrap();
-        
+
         assert_eq!(new_obj, rx_new_obj);
         println!("{:?}", rx_new_obj);
     }
